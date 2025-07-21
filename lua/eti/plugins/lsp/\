@@ -1,0 +1,3 @@
+~/.config/nvim/lua/eti/plugins/lsp/..
+   lspconfig.lua
+   mason.lua
