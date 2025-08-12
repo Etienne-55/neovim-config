@@ -18,7 +18,7 @@ return {
       end, { desc = "Toggle CopilotChat" })
       
       -- Toggle autocomplete (GitHub Copilot suggestions)
-      vim.keymap.set("n", "<leader>ca", function()
+      vim.keymap.set("n", "<C-c>", function()
         if vim.g.copilot_enabled == nil or vim.g.copilot_enabled == 1 then
           vim.cmd("Copilot disable")
           vim.g.copilot_enabled = 0

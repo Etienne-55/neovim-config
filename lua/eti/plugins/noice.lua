@@ -27,14 +27,14 @@ return {
           max_height = 3, -- Limit height to 3 lines
           max_width = 60, -- Limit width to 60 characters
         },
-        timeout = 2000, -- Messages disappear after 2 seconds (default is 4000)
+        timeout = 500, -- Messages disappear after 2 seconds (default is 4000)
         position = {
           row = -2, -- Position from bottom
           col = "100%", -- Right side
         },
       },
       notify = {
-        timeout = 2000, -- Notifications disappear after 2 seconds
+        timeout = 500, -- Notifications disappear after 2 seconds
         size = {
           max_height = 5, -- Smaller notification height
           max_width = 80, -- Smaller notification width
