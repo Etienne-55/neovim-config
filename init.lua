@@ -13,3 +13,7 @@ vim.keymap.set('n', 'N', 'Nzz')
 vim.keymap.set("n", "<Space>zz", function()
   require("zen-mode").toggle()
 end, { desc = "Toggle Zen Mode" })
+
+-- treesitter
+vim.keymap.set('n', '<Space>T', vim.treesitter.inspect_tree, { 
+desc = 'Inspect Treesitter tree' })
