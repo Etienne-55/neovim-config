@@ -17,3 +17,4 @@ end, { desc = "Toggle Zen Mode" })
 -- treesitter
 vim.keymap.set('n', '<Space>T', vim.treesitter.inspect_tree, { 
 desc = 'Inspect Treesitter tree' })
+

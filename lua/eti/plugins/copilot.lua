@@ -7,7 +7,9 @@ return {
     },
     build = "make tiktoken",
     opts = {
+      model = 'claude-sonnet-4',
       -- Your existing opts here
+      --
     },
     config = function(_, opts)
       require("CopilotChat").setup(opts)
@@ -17,6 +19,7 @@ return {
         require("CopilotChat").toggle()
       end, { desc = "Toggle CopilotChat" })
       
+      vim.g.copilot_auto_trigger = false
       -- Toggle autocomplete (GitHub Copilot suggestions)
       vim.keymap.set("n", "<C-c>", function()
         if vim.g.copilot_enabled == nil or vim.g.copilot_enabled == 1 then
@@ -37,3 +40,5 @@ return {
     end,
   },
 }
+
+
