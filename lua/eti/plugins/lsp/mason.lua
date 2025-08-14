@@ -32,6 +32,13 @@ return {
         "tailwindcss",
         "lua_ls",
         "pyright",
+        "gopls",
+        "jsonls",
+        "bashls", 
+        "yamlls",
+        "dockerls",   
+        "sqlls", 
+        "clangd", 
         "rust_analyzer"
       },
     })

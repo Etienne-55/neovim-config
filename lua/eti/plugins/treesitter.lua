@@ -42,6 +42,7 @@ return {
         "query",
         "vimdoc",
         "c",
+        "go",
         "rust",
         "python",
         "swift",
