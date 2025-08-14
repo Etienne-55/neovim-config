@@ -18,3 +18,5 @@ end, { desc = "Toggle Zen Mode" })
 vim.keymap.set('n', '<Space>T', vim.treesitter.inspect_tree, { 
 desc = 'Inspect Treesitter tree' })
 
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { 
+desc = 'Clear search highlighting' })
