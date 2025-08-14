@@ -21,6 +21,7 @@ return {
         enable = true,
       },
       -- ensure these language parsers are installed
+      auto_install = true,
       ensure_installed = {
         "json",
         "javascript",
