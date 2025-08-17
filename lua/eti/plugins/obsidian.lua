@@ -23,6 +23,10 @@ return {
         name = "personal",
         path = vim.fn.expand("~/tcc"),
       },
+      {
+        name = "main_vault",
+        path = vim.fn.expand("~/main_vault/"),
+      },
     },
 
     -- see below for full list of options 👇
