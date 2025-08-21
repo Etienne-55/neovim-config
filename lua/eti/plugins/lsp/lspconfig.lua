@@ -64,6 +64,9 @@ return {
     local capabilities = cmp_nvim_lsp.default_capabilities()
 
     vim.diagnostic.config({
+      virtual_text = true,
+      underline = true,
+      update_in_insert = false,
       signs = {
         text = {
           [vim.diagnostic.severity.ERROR] = " ",
@@ -100,6 +103,19 @@ return {
 
     vim.lsp.config("eslint", {
       filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+    })
+
+    vim.lsp.config("gopls", {
+      settings = {
+        gopls = {
+          analyses = {
+            unusedparams = true,
+            shadow = true,
+          },
+          staticcheck = true,
+          gofumpt = true,
+        },
+      },
     })
 
     vim.lsp.config("lua_ls", {

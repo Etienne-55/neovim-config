@@ -21,7 +21,7 @@ return {
     workspaces = {
       {
         name = "personal",
-        path = vim.fn.expand("~/tcc"),
+        path = vim.fn.expand("~/Library/Mobile Documents/iCloud~md~obsidian/Documents/tcc_ia"),
       },
       {
         name = "main_vault",
