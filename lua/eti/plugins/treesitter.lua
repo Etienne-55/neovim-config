@@ -29,6 +29,7 @@ return {
         "gitignore",
         "query",
         "vimdoc",
+        "go",
         "c",
         "swift",
       },

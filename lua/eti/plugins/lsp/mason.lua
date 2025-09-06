@@ -50,6 +50,7 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "pylint",
+        "golangci-lint",
         "eslint_d",
       },
     })
