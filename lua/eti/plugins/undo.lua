@@ -3,7 +3,7 @@ return {
 	keys = {
 		{
 			"<leader>u",
-			":UndotreeShow<CR>",
+			":UndotreeShow<CR>:UndotreeFocus<CR>",
 			desc = "Open UndoTree",
 			silent = true,
 		},
