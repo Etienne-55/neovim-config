@@ -34,11 +34,11 @@ return {
         "pyright",
         "gopls",
         "jsonls",
-        "bashls", 
+        "bashls",
         "yamlls",
-        "dockerls",   
-        "sqlls", 
-        "clangd", 
+        "dockerls",
+        "sqlls",
+        "clangd",
         "rust_analyzer"
       },
     })
@@ -47,9 +47,9 @@ return {
       ensure_installed = {
         "prettier", -- prettier formatter
         "stylua", -- lua formatter
-        "isort", -- python formatter
-        "black", -- python formatter
-        "pylint",
+        -- "isort", -- python formatter
+        -- "black", -- python formatter
+        -- "pylint",
         "eslint_d",
       },
     })
