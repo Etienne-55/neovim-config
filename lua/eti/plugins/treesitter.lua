@@ -20,6 +20,7 @@ return {
         "typescript",
         "tsx",
         "yaml",
+        "rust",
         "html",
         "css",
         "graphql",
