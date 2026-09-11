@@ -21,6 +21,7 @@ return {
         "tsx",
         "yaml",
         "rust",
+        "php",
         "html",
         "css",
         "graphql",
