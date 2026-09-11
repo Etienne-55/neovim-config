@@ -34,7 +34,7 @@ return {
         },
       },
       notify = {
-        timeout = 500, -- Notifications disappear after 2 seconds
+        timeout = 500, -- Notifications disappear after 0.5 seconds
         size = {
           max_height = 5, -- Smaller notification height
           max_width = 80, -- Smaller notification width

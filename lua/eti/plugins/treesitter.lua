@@ -1,50 +1,50 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  event = { "BufReadPre", "BufNewFile" },
+  branch = "main",
+  lazy = false, -- the main branch does not support lazy-loading
   build = ":TSUpdate",
   config = function()
-    -- import nvim-treesitter plugin
-    local treesitter = require("nvim-treesitter.configs")
-
-    -- configure treesitter
-    treesitter.setup({ -- enable syntax highlighting
-      highlight = {
-        enable = true,
-      },
-      -- enable indentation
-      indent = { enable = true },
-      -- ensure these language parsers are installed
-      ensure_installed = {
-        "json",
-        "javascript",
-        "typescript",
-        "tsx",
-        "yaml",
-        "rust",
-        "php",
-        "html",
-        "css",
-        "graphql",
-        "bash",
-        "lua",
-        "vim",
-        "dockerfile",
-        "gitignore",
-        "query",
-        "vimdoc",
-        "c",
-        "swift",
-      },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
-          scope_incremental = false,
-          node_decremental = "<bs>",
-        },
-      },
+    -- ensure these language parsers are installed (needs the tree-sitter CLI)
+    require("nvim-treesitter").install({
+      "json",
+      "javascript",
+      "typescript",
+      "tsx",
+      "yaml",
+      "rust",
+      "php",
+      "html",
+      "css",
+      "graphql",
+      "bash",
+      "lua",
+      "vim",
+      "dockerfile",
+      "gitignore",
+      "query",
+      "vimdoc",
+      "c",
+      "swift",
+      "go",
+      "python",
+      "svelte",
+      "prisma",
     })
+
+    -- enable syntax highlighting and indentation for any filetype with a parser
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("UserTreesitter", {}),
+      callback = function(ev)
+        if pcall(vim.treesitter.start, ev.buf) then
+          vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
+    })
+
+    -- incremental selection, using Neovim's built-in `an` / `in`
+    vim.keymap.set("n", "<C-space>", "van", { remap = true, desc = "Start treesitter selection" })
+    vim.keymap.set("x", "<C-space>", "an", { remap = true, desc = "Expand treesitter selection" })
+    vim.keymap.set("x", "<bs>", "in", { remap = true, desc = "Shrink treesitter selection" })
 
     -- use bash parser for zsh files
     vim.treesitter.language.register("bash", "zsh")
