@@ -5,6 +5,7 @@ return {
     "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
     { "folke/lazydev.nvim", ft = "lua", opts = {} },
+    { "b0o/schemastore.nvim", version = false }, -- json/yaml schemas (package.json, tsconfig, ...)
   },
   config = function()
     -- import cmp-nvim-lsp plugin
@@ -114,6 +115,25 @@ return {
           },
           staticcheck = true,
           gofumpt = true,
+        },
+      },
+    })
+
+    vim.lsp.config("jsonls", {
+      settings = {
+        json = {
+          schemas = require("schemastore").json.schemas(),
+          validate = { enable = true },
+        },
+      },
+    })
+
+    vim.lsp.config("yamlls", {
+      settings = {
+        yaml = {
+          -- use schemastore instead of the built-in schema store
+          schemaStore = { enable = false, url = "" },
+          schemas = require("schemastore").yaml.schemas(),
         },
       },
     })
