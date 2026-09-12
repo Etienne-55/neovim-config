@@ -29,6 +29,14 @@ return {
       "python",
       "svelte",
       "prisma",
+      "angular",
+      "scss",
+    })
+
+    -- always treat Angular component templates as htmlangular
+    -- (neovim only detects it when control-flow syntax is in the first 40 lines)
+    vim.filetype.add({
+      pattern = { [".*%.component%.html"] = "htmlangular" },
     })
 
     -- enable syntax highlighting and indentation for any filetype with a parser

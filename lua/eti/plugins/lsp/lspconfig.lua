@@ -102,7 +102,7 @@ return {
     })
 
     vim.lsp.config("emmet_ls", {
-      filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+      filetypes = { "html", "htmlangular", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
     })
 
     vim.lsp.config("gopls", {

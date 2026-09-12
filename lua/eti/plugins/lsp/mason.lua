@@ -39,7 +39,10 @@ return {
         "dockerls",
         "sqlls",
         "clangd",
-        "rust_analyzer"
+        "rust_analyzer",
+        "ts_ls",
+        "angularls",
+        "eslint",
       },
     })
 
