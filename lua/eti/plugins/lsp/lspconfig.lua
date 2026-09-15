@@ -15,6 +15,10 @@ return {
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
+        -- cmp-nvim-lsp only picks up new servers on InsertEnter, so a server that finishes
+        -- starting while you're already typing gave no completions until you re-entered insert
+        pcall(vim.api.nvim_exec_autocmds, "InsertEnter", { group = "cmp_nvim_lsp", modeline = false })
+
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf, silent = true }
@@ -102,8 +106,14 @@ return {
       filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
     })
 
-    vim.lsp.config("emmet_ls", {
-      filetypes = { "html", "htmlangular", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+    -- also run the html server in Angular templates (tag and inline css completions)
+    vim.lsp.config("html", {
+      filetypes = { "html", "htmlangular" },
+    })
+
+    -- only start in Angular workspaces (angular.json / nx.json), not in every ts/html file
+    vim.lsp.config("angularls", {
+      workspace_required = true,
     })
 
     vim.lsp.config("gopls", {

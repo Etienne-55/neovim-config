@@ -55,7 +55,16 @@ return {
       sources = cmp.config.sources({
         { name = "lazydev", group_index = 0 }, -- neovim lua api (lazydev.nvim)
         { name = "nvim_lsp"},
-        { name = "luasnip" }, -- snippets
+        {
+          name = "luasnip", -- snippets
+          -- snippets insert their whole text ("console.log()", "<span></span>"), so hide them
+          -- right after "." or "<", otherwise they merge with what's already typed
+          entry_filter = function(entry, ctx)
+            local offset = entry:get_offset()
+            local char_before = ctx.cursor_before_line:sub(offset - 1, offset - 1)
+            return char_before ~= "." and char_before ~= "<"
+          end,
+        },
         { name = "buffer" }, -- text within current buffer
         { name = "path" }, -- file system paths
       }),

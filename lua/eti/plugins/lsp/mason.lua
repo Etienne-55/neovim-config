@@ -43,6 +43,7 @@ return {
         "ts_ls",
         "angularls",
         "eslint",
+        "emmet_language_server", -- replaces emmet_ls, which merged tags like "<<div></div>"
       },
     })
 
