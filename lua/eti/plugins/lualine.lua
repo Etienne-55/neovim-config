@@ -57,6 +57,17 @@ return {
       },
       sections = {
         lualine_x = {
+          -- show macro recording: noice hides the "recording @q" message, and nvim-autopairs
+          -- stops pairing while recording, so an accidental `q` made pairs silently stop working
+          {
+            function()
+              return "recording @" .. vim.fn.reg_recording()
+            end,
+            cond = function()
+              return vim.fn.reg_recording() ~= ""
+            end,
+            color = { fg = colors.red, gui = "bold" },
+          },
           {
             lazy_status.updates,
             cond = lazy_status.has_updates,
@@ -67,6 +78,14 @@ return {
           { "filetype" },
         },
       },
+    })
+
+    -- lualine doesn't refresh on these by itself
+    vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+      group = vim.api.nvim_create_augroup("UserLualineRecording", {}),
+      callback = function()
+        vim.schedule(lualine.refresh)
+      end,
     })
   end,
 }
