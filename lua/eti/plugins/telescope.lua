@@ -46,5 +46,11 @@ return {
     keymap.set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
     keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
     keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
+
+    -- git (previews show the diff)
+    keymap.set("n", "<leader>gd", "<cmd>Telescope git_status<cr>", { desc = "Changed files with diff preview" })
+    keymap.set("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Browse commits with diff preview" })
+    keymap.set("n", "<leader>gb", "<cmd>Telescope git_bcommits<cr>", { desc = "Browse buffer commits with diff preview" })
+    keymap.set("n", "<leader>gB", "<cmd>Telescope git_branches<cr>", { desc = "Browse git branches" })
   end,
 }
