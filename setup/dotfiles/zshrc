@@ -6,6 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
+autoload -Uz compinit && compinit -u
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -14,6 +15,15 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias vim="nvim"
+
+# plain `tmux` always attaches to session 0 (creates it if missing) instead of opening a new session
+tmux() {
+  if [ $# -eq 0 ]; then
+    command tmux new-session -A -s 0
+  else
+    command tmux "$@"
+  fi
+}
 
 alias lg='lazygit'
 
@@ -34,10 +44,12 @@ alias ff='fzf --preview "bat --color=always {}" --preview-window=right:50% | hea
 export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/etiennepautet/.lmstudio/bin"
-# End of LM Studio CLI section
-
 export PATH="/Applications/Wireshark.app/Contents/MacOS:$PATH"
 
 export PATH=$PATH:$HOME/go/bin
+
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+export PATH="$HOME/.local/bin:$PATH"

@@ -49,9 +49,9 @@ Then commit the changed `Brewfile`.
 
 - **ssh keys** — generate a new one and add it to GitHub; keys should never live
   in a repo.
-- **Apps not from Homebrew** — your `.zshrc` adds Wireshark and LM Studio to the
-  PATH, and neither is in the Brewfile. Install them by hand, or add them
-  (`brew install --cask wireshark lm-studio`) and re-run `update-brewfile.sh`.
+- **Apps not from Homebrew** — your `.zshrc` adds Wireshark to the
+  PATH, and it is not in the Brewfile. Install it by hand, or add it
+  (`brew install --cask wireshark`) and re-run `update-brewfile.sh`.
 - **Anything in the login keychain**, including git credentials. Your gitconfig
   uses `osxkeychain`, so you'll log in to GitHub again on the new machine.
 - **Obsidian vault** — the app gets installed, the notes don't.
