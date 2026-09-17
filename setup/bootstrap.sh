@@ -56,6 +56,11 @@ link tmux.conf   "$HOME/.tmux.conf"
 link wezterm.lua "$HOME/.wezterm.lua"
 link gitconfig   "$HOME/.gitconfig"
 link tmux-cht.sh "$HOME/.tmux-cht.sh"
+link tmux-cht-languages "$HOME/.tmux-cht-languages"
+link tmux-cht-command   "$HOME/.tmux-cht-command"
+# real dir (not a symlink into this repo) so claude doesn't think it's in a git project
+mkdir -p "$HOME/.claude-chat"
+link claude-chat.md "$HOME/.claude-chat/CLAUDE.md"
 
 # --------------------------------------------------------------------- tmux
 TPM="$HOME/.tmux/plugins/tpm"
@@ -76,7 +81,7 @@ else
   log "Installing language servers and formatters (a few minutes)"
   nvim --headless \
     -c 'autocmd User MasonToolsUpdateCompleted quitall' \
-    -c 'lua vim.defer_fn(function() vim.cmd("qa!") end, 300000)' \
+    -c 'lua vim.defer_fn(function() vim.cmd("cquit 1") end, 300000)' \
     -c 'MasonToolsInstall' || warn "run :Mason inside neovim to check"
 fi
 

@@ -19,8 +19,8 @@ config.color_schemes = {
 			"#214969", -- black
 			"#E52E2E", -- red
 			"#44FFB1", -- green
-			"#6B9FD8", -- blue
 			"#D4A574", -- yellow
+			"#6B9FD8", -- blue
 			"#a277ff", -- magenta
 			"#24EAF7", -- cyan
 			"#CBE0F0", -- white
@@ -29,8 +29,8 @@ config.color_schemes = {
 			"#2A5A7F", -- bright black
 			"#FF6B6B", -- bright red
 			"#5FFFC4", -- bright green
-			"#7EB3E8", -- bright blue
 			"#E8C294", -- bright yellow
+			"#7EB3E8", -- bright blue
 			"#B88FFF", -- bright magenta
 			"#5FF4FF", -- bright cyan
 			"#E0F0FF", -- bright white
@@ -63,8 +63,8 @@ config.color_schemes = {
 			"#3D2A00", -- black   (dim burnt amber)
 			"#FF5F1F", -- red     (red-orange: errors, deletions)
 			"#FFB000", -- green   (core amber: success, additions)
-			"#C98500", -- blue    (deep amber: dirs, paths)
 			"#FFD24D", -- yellow  (gold: warnings)
+			"#C98500", -- blue    (deep amber: dirs, paths)
 			"#FF8A3D", -- magenta (orange: keywords, git branch)
 			"#FFC766", -- cyan    (light amber)
 			"#F0B45A", -- white
@@ -73,8 +73,8 @@ config.color_schemes = {
 			"#7A5A1E", -- bright black (comments / autosuggestions)
 			"#FF7F4D",
 			"#FFC940",
-			"#E0A030",
 			"#FFE58A",
+			"#E0A030",
 			"#FFA366",
 			"#FFD98C",
 			"#FFF0D0",

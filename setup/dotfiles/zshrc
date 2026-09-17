@@ -51,5 +51,5 @@ export PATH=$PATH:$HOME/go/bin
 
 
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+command -v ng >/dev/null && source <(ng completion script)
 export PATH="$HOME/.local/bin:$PATH"
