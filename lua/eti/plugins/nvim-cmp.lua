@@ -55,6 +55,7 @@ return {
       sources = cmp.config.sources({
         { name = "lazydev", group_index = 0 }, -- neovim lua api (lazydev.nvim)
         { name = "nvim_lsp"},
+        { name = "html-css" }, -- css class names (bootstrap, ...) in class="..."
         {
           name = "luasnip", -- snippets
           -- snippets insert their whole text ("console.log()", "<span></span>"), so hide them

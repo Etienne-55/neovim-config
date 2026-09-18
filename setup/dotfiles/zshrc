@@ -31,6 +31,12 @@ alias ld='lazydocker'
 
 alias dbui='vim +DBUI'
 
+# changed files with diff preview (same as <space>gd in nvim)
+alias gd='nvim "+Telescope git_status"'
+
+# open the copied PGP message in nvim, then <space>pd to decrypt
+alias pd='pbpaste | nvim -'
+
 alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
 
 eval "$(zoxide init zsh)"
