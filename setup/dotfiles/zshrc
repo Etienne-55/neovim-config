@@ -36,6 +36,16 @@ alias dbui='vim +DBUI'
 # changed files with diff preview (same as <space>gd in nvim)
 alias gd='nvim "+Telescope git_status"'
 
+# bare `fd` opens the nvim directory picker (same as <space>fd);
+# `fd <args>` still runs the real fd binary
+fd() {
+  if [ $# -eq 0 ]; then
+    nvim "+FindDirectory"
+  else
+    command fd "$@"
+  fi
+}
+
 # open the copied PGP message in nvim, then <space>pd to decrypt
 alias pd='pbpaste | nvim -'
 
@@ -45,9 +55,11 @@ eval "$(zoxide init zsh)"
 
 alias cd="z"
 
-alias fs='rg --line-number --no-heading . | fzf --ansi --delimiter : --preview "bat --color=always --highlight-line {2} {1}" --preview-window=right:50% | head -1 | while IFS=":" read -r file line rest; do nvim "+$line" "$file"; done'
+# find string in cwd (same as <space>fs in nvim)
+alias fs='nvim "+Telescope live_grep"'
 
-alias ff='fzf --preview "bat --color=always {}" --preview-window=right:50% | head -1 | xargs -I {} nvim "{}"'
+# fuzzy find files in cwd (same as <space>ff in nvim)
+alias ff='nvim "+Telescope find_files"'
 
 export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"

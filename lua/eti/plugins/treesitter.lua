@@ -7,6 +7,8 @@ return {
     -- ensure these language parsers are installed (needs the tree-sitter CLI)
     require("nvim-treesitter").install({
       "json",
+      "markdown",
+      "markdown_inline",
       "javascript",
       "typescript",
       "tsx",
