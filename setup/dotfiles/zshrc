@@ -25,6 +25,8 @@ tmux() {
   fi
 }
 
+alias c='clear'
+
 alias lg='lazygit'
 
 alias ld='lazydocker'
