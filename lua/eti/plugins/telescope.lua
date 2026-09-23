@@ -44,8 +44,25 @@ return {
 
     telescope.load_extension("fzf")
 
+    -- when nvim was launched from the shell only to host a picker, <Esc> should
+    -- quit back to the terminal; inside a session it just closes the picker
+    local function quit_on_escape(prompt_bufnr, map)
+      map({ "i", "n" }, "<Esc>", function()
+        actions.close(prompt_bufnr)
+        vim.cmd("qall")
+      end)
+      return true
+    end
+
+    local function picker_opts(opts, from_shell)
+      if from_shell then
+        opts.attach_mappings = quit_on_escape
+      end
+      return opts
+    end
+
     -- pick a directory, then find files in it (<cr>) or grep in it (<C-g>)
-    local function find_directory()
+    local function find_directory(from_shell)
       pickers
         .new({}, {
           prompt_title = "Directories",
@@ -70,18 +87,50 @@ return {
               end
             end
             actions.select_default:replace(pick(function(dir)
-              builtin.find_files({ cwd = dir, prompt_title = "Files in " .. dir })
+              builtin.find_files(picker_opts({ cwd = dir, prompt_title = "Files in " .. dir }, from_shell))
             end))
             map({ "i", "n" }, "<C-g>", pick(function(dir)
-              builtin.live_grep({ search_dirs = { dir }, prompt_title = "Grep in " .. dir })
+              builtin.live_grep(
+                picker_opts({ search_dirs = { dir }, prompt_title = "Grep in " .. dir }, from_shell)
+              )
             end))
+            if from_shell then
+              quit_on_escape(prompt_bufnr, map)
+            end
             return true
           end,
         })
         :find()
     end
 
-    vim.api.nvim_create_user_command("FindDirectory", find_directory, { desc = "Pick a directory" })
+    vim.api.nvim_create_user_command("FindDirectory", function()
+      find_directory()
+    end, { desc = "Pick a directory" })
+
+    -- entry point for the shell aliases: `nvim "+Pick find_files"`
+    vim.api.nvim_create_user_command("Pick", function(o)
+      if o.args == "directory" then
+        return find_directory(true)
+      end
+      if type(builtin[o.args]) ~= "function" then
+        return vim.notify("Pick: no such picker: " .. o.args, vim.log.levels.ERROR)
+      end
+      builtin[o.args](picker_opts({}, true))
+    end, {
+      nargs = 1,
+      desc = "Open a picker whose <Esc> quits nvim",
+      complete = function(lead)
+        local names = { "directory" }
+        for name, fn in pairs(builtin) do
+          if type(fn) == "function" then
+            names[#names + 1] = name
+          end
+        end
+        return vim.tbl_filter(function(name)
+          return vim.startswith(name, lead)
+        end, names)
+      end,
+    })
 
     -- set keymaps
     local keymap = vim.keymap -- for conciseness

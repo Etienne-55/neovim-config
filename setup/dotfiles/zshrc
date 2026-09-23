@@ -34,13 +34,13 @@ alias ld='lazydocker'
 alias dbui='vim +DBUI'
 
 # changed files with diff preview (same as <space>gd in nvim)
-alias gd='nvim "+Telescope git_status"'
+alias gd='nvim "+Pick git_status"'
 
 # bare `fd` opens the nvim directory picker (same as <space>fd);
 # `fd <args>` still runs the real fd binary
 fd() {
   if [ $# -eq 0 ]; then
-    nvim "+FindDirectory"
+    nvim "+Pick directory"
   else
     command fd "$@"
   fi
@@ -56,10 +56,10 @@ eval "$(zoxide init zsh)"
 alias cd="z"
 
 # find string in cwd (same as <space>fs in nvim)
-alias fs='nvim "+Telescope live_grep"'
+alias fs='nvim "+Pick live_grep"'
 
 # fuzzy find files in cwd (same as <space>ff in nvim)
-alias ff='nvim "+Telescope find_files"'
+alias ff='nvim "+Pick find_files"'
 
 export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
