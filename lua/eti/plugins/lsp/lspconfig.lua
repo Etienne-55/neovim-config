@@ -111,6 +111,15 @@ return {
       filetypes = { "html", "htmlangular" },
     })
 
+    -- while tsserver loads the project, completions come from a syntax-only server that knows
+    -- no auto-imports (no `Component`, `inject`, ... from @angular/core), and cmp keeps that
+    -- list for the whole word; "never" waits for the real project instead
+    vim.lsp.config("ts_ls", {
+      init_options = {
+        tsserver = { useSyntaxServer = "never" },
+      },
+    })
+
     -- only start in Angular workspaces (angular.json / nx.json), not in every ts/html file
     vim.lsp.config("angularls", {
       workspace_required = true,
