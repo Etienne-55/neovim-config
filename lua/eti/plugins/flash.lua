@@ -7,9 +7,10 @@ return {
       search = {
         enabled = true,
       },
-      -- char = {
-      --   jump_labels = true,
-      -- },
+      -- char mode hijacks f/F/t/T by default; disable to keep native motions
+      char = {
+        enabled = false,
+      },
     },
   },
   -- stylua: ignore
