@@ -117,6 +117,9 @@ return {
     vim.lsp.config("ts_ls", {
       init_options = {
         tsserver = { useSyntaxServer = "never" },
+        -- in a class, complete members of implemented interfaces / base classes as full
+        -- method stubs (`ngOnInit(): void {}` once the class implements OnInit)
+        preferences = { includeCompletionsWithClassMemberSnippets = true },
       },
     })
 

@@ -1,7 +1,7 @@
 tap "jesseduffield/lazygit"
 tap "nikitabobko/tap"
-# Aquarium animation in ASCII art
-brew "asciiquarium"
+# Nyan Cat in your terminal
+brew "nyancat"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Clone of cat(1) with syntax highlighting and Git integration

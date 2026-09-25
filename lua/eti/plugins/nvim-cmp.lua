@@ -1,6 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  event = { "InsertEnter", "CmdlineEnter" }, -- CmdlineEnter so "/" completion works before any insert
   dependencies = {
     "hrsh7th/cmp-buffer", -- source for text in buffer
     "hrsh7th/cmp-path", -- source for file system paths
@@ -26,8 +26,33 @@ return {
     -- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
     require("luasnip.loaders.from_vscode").lazy_load()
 
+    -- friendly-snippets files its Angular snippets (a-component, a-service, ...) under an
+    -- "angular" filetype that no buffer has, so pull them into ts and angular templates
+    luasnip.filetype_extend("typescript", { "angular" })
+    luasnip.filetype_extend("htmlangular", { "angular" })
+
+    -- Angular lifecycle hooks: ts_ls only suggests them once the class `implements` the
+    -- interface, so type the hook name and pick the snippet instead
+    local hooks = {
+      ngOnInit = "", ngOnDestroy = "", ngOnChanges = "changes: SimpleChanges", ngDoCheck = "",
+      ngAfterViewInit = "", ngAfterViewChecked = "", ngAfterContentInit = "", ngAfterContentChecked = "",
+    }
+    local hook_snippets = {}
+    for name, params in pairs(hooks) do
+      table.insert(hook_snippets, luasnip.snippet(name, {
+        luasnip.text_node({ name .. "(" .. params .. "): void {", "\t" }),
+        luasnip.insert_node(0),
+        luasnip.text_node({ "", "}" }),
+      }))
+    end
+    luasnip.add_snippets("typescript", hook_snippets)
+
     cmp.setup.cmdline("/", {
-      mapping = cmp.mapping.preset.cmdline(),
+      -- arrows pick a suggestion (it gets written into the search), then Enter searches it
+      mapping = cmp.mapping.preset.cmdline({
+        ["<Down>"] = { c = cmp.mapping.select_next_item() },
+        ["<Up>"] = { c = cmp.mapping.select_prev_item() },
+      }),
       sources = {
         { name = "buffer" },
       },
