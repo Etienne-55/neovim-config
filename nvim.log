@@ -1,0 +1,2 @@
+WRN 2026-09-25T08:20:09.811 ?.92809    server_start:197: Failed to start server: operation not permitted: /tmp/claude-502/nvim.eti/oQ1OKH/nvim.92809.0
+WRN 2026-09-25T08:20:09.952 ?.92858    server_start:197: Failed to start server: operation not permitted: /tmp/claude-502/nvim.eti/fOHJvk/nvim.92858.0

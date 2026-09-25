@@ -9,6 +9,10 @@ return {
     vim.g.loaded_netrwPlugin = 1
 
     nvimtree.setup({
+      -- let oil.nvim own directory buffers (`nvim .`, `:e dir/`)
+      hijack_directories = {
+        enable = false,
+      },
       view = {
         width = 35,
         relativenumber = true,

@@ -64,10 +64,12 @@ alias ff='nvim "+Pick find_files"'
 export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 
+# puppeteer: use the arm64 Chromium build (karma tests)
+export PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM=1
+
 export PATH="/Applications/Wireshark.app/Contents/MacOS:$PATH"
 
 export PATH=$PATH:$HOME/go/bin
-
 
 
 # Load Angular CLI autocompletion.
