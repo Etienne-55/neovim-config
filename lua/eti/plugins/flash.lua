@@ -3,6 +3,18 @@ return {
   event = "VeryLazy",
   ---@type Flash.Config
   opts = {
+    search = {
+      -- defaults (a list here replaces them) plus the Claude terminal: no labels in it
+      -- unless it's the window being searched, which flash always keeps
+      exclude = {
+        "notify",
+        "cmp_menu",
+        "noice",
+        "flash_prompt",
+        "snacks_terminal",
+        function(win) return not vim.api.nvim_win_get_config(win).focusable end,
+      },
+    },
     modes = {
       search = {
         enabled = true,

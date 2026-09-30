@@ -35,6 +35,7 @@ repo — commit it and the next machine gets it.
 | `dotfiles/gitconfig` | `~/.gitconfig` |
 | `dotfiles/tmux-cht.sh` | `~/.tmux-cht.sh` (prefix + i cheat sheet) |
 | `gaufre/gaufre` | stays here; `~/.tmux.conf` opens it in a popup with prefix + e (apple silicon build) |
+| `hex/hex` | stays here; `~/.tmux.conf` opens it in a popup with prefix + Space — a cheat sheet of every binding in this config, read live from it (source next to it, apple silicon build) |
 
 ## Keeping it up to date
 

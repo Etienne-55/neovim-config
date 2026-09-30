@@ -123,9 +123,26 @@ return {
       },
     })
 
-    -- only start in Angular workspaces (angular.json / nx.json), not in every ts/html file
+    -- only start in Angular workspaces (angular.json / nx.json), not in every ts/html file.
+    -- --forceStrictTemplates: projects with fullTemplateTypeCheck/strictTemplates off only check
+    -- top-level template expressions, so gd/K/rename found nothing inside <ng-template>, *ngIf,
+    -- *ngFor...; it only changes the editor's language service, not `ng build`
+    local ngserver_cmd = vim.lsp.config.angularls.cmd
     vim.lsp.config("angularls", {
       workspace_required = true,
+      cmd = function(dispatchers, config)
+        -- lspconfig builds the probe-location args itself, so append the flag to its command
+        local rpc_start = vim.lsp.rpc.start
+        vim.lsp.rpc.start = function(cmd, ...)
+          vim.lsp.rpc.start = rpc_start
+          table.insert(cmd, "--forceStrictTemplates")
+          return rpc_start(cmd, ...)
+        end
+        local ok, rpc = pcall(ngserver_cmd, dispatchers, config)
+        vim.lsp.rpc.start = rpc_start
+        assert(ok, rpc)
+        return rpc
+      end,
     })
 
     vim.lsp.config("gopls", {

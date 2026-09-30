@@ -25,6 +25,17 @@ local function send_to_claude(text, submit)
   end
 end
 
+-- hlsearch paints matches in every window. While the cursor is elsewhere, Claude's window
+-- maps the search groups to an empty one, so / only lights up the file being edited.
+local NO_SEARCH = "Search:ClaudeNoSearch,CurSearch:ClaudeNoSearch,IncSearch:ClaudeNoSearch"
+local function show_search(win, show)
+  local hl = vim.wo[win].winhighlight:gsub(",?%a*Search:ClaudeNoSearch", "")
+  if not show then
+    hl = hl == "" and NO_SEARCH or hl .. "," .. NO_SEARCH
+  end
+  vim.wo[win].winhighlight = hl
+end
+
 return {
   "coder/claudecode.nvim",
   dependencies = { "folke/snacks.nvim" },
@@ -73,6 +84,11 @@ return {
                   vim.cmd.startinsert()
                 end
               end,
+            })
+            vim.api.nvim_set_hl(0, "ClaudeNoSearch", {})
+            vim.api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
+              buffer = buf,
+              callback = function(args) show_search(0, args.event == "WinEnter") end,
             })
           end,
           keys = {

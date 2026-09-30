@@ -1,0 +1,4 @@
+alias lg='lazygit'
+
+# fuzzy find files in cwd (same as <space>ff in nvim)
+alias ff='nvim "+Pick find_files"'

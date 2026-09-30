@@ -33,6 +33,12 @@ return {
       end, "Blame line")
       map("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle line blame")
 
+      map("n", "<leader>hi", function()
+        local on = gs.toggle_linehl()
+        gs.toggle_deleted(on)
+        gs.toggle_word_diff(on)
+      end, "Toggle inline diff")
+
       map("n", "<leader>hd", gs.diffthis, "Diff this")
       map("n", "<leader>hD", function()
         gs.diffthis("~")
