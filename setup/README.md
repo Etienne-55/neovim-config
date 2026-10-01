@@ -13,9 +13,9 @@ the `brew bundle` step.
 ## What the script does
 
 1. Installs the Xcode command line tools and Homebrew if they're missing.
-2. Installs everything in `Brewfile` (50 formulas, 7 casks) — neovim, tmux,
-   lazygit, lazydocker, ripgrep, fzf, bat, eza, zoxide, yazi, delta, node, go,
-   java, tree-sitter, the zsh plugins, the nerd fonts, wezterm, obsidian…
+2. Installs everything in `Brewfile` (9 formulas, 3 casks) — just what neovim
+   and wezterm need: neovim, git, lazygit, ripgrep, fd, eza, node, go,
+   tree-sitter, the nerd fonts and wezterm.
 3. Symlinks the dotfiles in `dotfiles/` into your home folder, backing up
    anything already there into `~/.dotfiles-backup/<date>/`.
 4. Installs tmux's plugin manager and your tmux plugins.
@@ -37,23 +37,4 @@ repo — commit it and the next machine gets it.
 | `gaufre/gaufre` | stays here; `~/.tmux.conf` opens it in a popup with prefix + e (apple silicon build) |
 | `hex/hex` | stays here; `~/.tmux.conf` opens it in a popup with prefix + Space — a cheat sheet of every binding in this config, read live from it (source next to it, apple silicon build) |
 
-## Keeping it up to date
 
-After installing something new with brew:
-
-```bash
-~/.config/nvim/setup/update-brewfile.sh
-```
-
-Then commit the changed `Brewfile`.
-
-## Not handled by the script
-
-- **ssh keys** — generate a new one and add it to GitHub; keys should never live
-  in a repo.
-- **Apps not from Homebrew** — your `.zshrc` adds Wireshark to the
-  PATH, and it is not in the Brewfile. Install it by hand, or add it
-  (`brew install --cask wireshark`) and re-run `update-brewfile.sh`.
-- **Anything in the login keychain**, including git credentials. Your gitconfig
-  uses `osxkeychain`, so you'll log in to GitHub again on the new machine.
-- **Obsidian vault** — the app gets installed, the notes don't.
