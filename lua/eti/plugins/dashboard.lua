@@ -1,4 +1,5 @@
 -- Start screen (replaces alpha-nvim). Merged into the snacks.nvim spec by lazy.
+-- Headers; each Pokémon group further down picks which of these it shows with
 local titles = {
   -- {
   --   "                                                     ",
@@ -23,8 +24,8 @@ local titles = {
   --   [[       _\///_____\/////____\//////////_____\/////___________\///________\///__\///___\///___\///__ ]],
   --   [[                                                                                                   ]],
   -- },
-  {
-    color = "#e5484d", -- red
+  red = {
+    color = "#e5484d",
     [[                                                     ]],
     [[  ███▄    █ ▓█████  ▒█████   ██▒   █▓ ██▓ ███▄ ▄███▓ ]],
     [[  ██ ▀█   █ ▓█   ▀ ▒██▒  ██▒▓██░   █▒▓██▒▓██▒▀█▀ ██▒ ]],
@@ -43,8 +44,8 @@ local titles = {
   --   [[ -. . --- ...- .. -- ]],
   --   [[                     ]],
   -- },
-  {
-    color = "#a371f7", -- purple
+  purple = {
+    color = "#a371f7",
     [[                                       ]],
     [[    ▄   ▄███▄   ████▄     ▄   ▄█ █▀▄▀█ ]],
     [[     █  █▀   ▀  █   █      █  ██ █ █ █ ]],
@@ -55,38 +56,94 @@ local titles = {
     [[                         ▐             ]],
     [[                                       ]],
   },
+  elite = {
+    color = "#46a758", -- plant green
+    [[                                   ]],
+    [[  ▐ ▄ ▄▄▄ .       ▌ ▐·▪  • ▌ ▄ ·.  ]],
+    [[ •█▌▐█▀▄.▀·▪     ▪█·█▌██ ·██ ▐███▪ ]],
+    [[ ▐█▐▐▌▐▀▀▪▄ ▄█▀▄ ▐█▐█•▐█·▐█ ▌▐▌▐█· ]],
+    [[ ██▐█▌▐█▄▄▌▐█▌.▐▌ ███ ▐█▌██ ██▌▐█▌ ]],
+    [[ ▀▀ █▪ ▀▀▀  ▀█▄▀▪. ▀  ▀▀▀▀▀  █▪▀▀▀ ]],
+    [[                                   ]],
+  },
+  isometric = {
+    color = "#00f0ff", -- neon cyan
+    [[                                                                                   ]],
+    [[     /\__\         /\  \         /\  \         /\__\          ___        /\__\     ]],
+    [[    /::|  |       /::\  \       /::\  \       /:/  /         /\  \      /::|  |    ]],
+    [[   /:|:|  |      /:/\:\  \     /:/\:\  \     /:/  /          \:\  \    /:|:|  |    ]],
+    [[  /:/|:|  |__   /::\~\:\  \   /:/  \:\  \   /:/__/  ___      /::\__\  /:/|:|__|__  ]],
+    [[ /:/ |:| /\__\ /:/\:\ \:\__\ /:/__/ \:\__\  |:|  | /\__\  __/:/\/__/ /:/ |::::\__\ ]],
+    [[ \/__|:|/:/  / \:\~\:\ \/__/ \:\  \ /:/  /  |:|  |/:/  / /\/:/  /    \/__/~~/:/  / ]],
+    [[     |:/:/  /   \:\ \:\__\    \:\  /:/  /   |:|__/:/  /  \::/__/           /:/  /  ]],
+    [[     |::/  /     \:\ \/__/     \:\/:/  /     \::::/__/    \:\__\          /:/  /   ]],
+    [[     /:/  /       \:\__\        \::/  /       ~~~~         \/__/         /:/  /    ]],
+    [[     \/__/         \/__/         \/__/                                   \/__/     ]],
+    [[                                                                                   ]],
+  },
 }
+-- same dripping art as red, in honey instead of blood
+titles.honey = vim.deepcopy(titles.red)
+titles.honey.color = "#e9a23b"
 
--- Pick a random header, drop the blank padding rows (sections handle spacing)
-math.randomseed(os.time())
-local title = titles[math.random(#titles)]
-local lines = {}
-for _, l in ipairs(title) do
-  if vim.trim(l) ~= "" then
-    lines[#lines + 1] = l
+-- header rows without the blank padding ones (sections handle spacing)
+local function logo_lines(title)
+  local lines = {}
+  for _, l in ipairs(title) do
+    if vim.trim(l) ~= "" then
+      lines[#lines + 1] = l
+    end
   end
+  return lines
 end
 
-local header_w = 0
-for _, l in ipairs(lines) do
-  header_w = math.max(header_w, vim.api.nvim_strwidth(l))
+local function logo_width(lines)
+  local w = 0
+  for _, l in ipairs(lines) do
+    w = math.max(w, vim.api.nvim_strwidth(l))
+  end
+  return w
 end
 
 -- Two columns (Pokémon | recent files) with no gap. The header is split down the
 -- middle, one half on top of each column, so it still reads as one full-width logo.
-local PANE_W = math.max(math.ceil(header_w / 2), 55)
-local header_left, header_right = {}, {}
-for _, l in ipairs(lines) do
-  local left = math.floor((2 * PANE_W - header_w) / 2)
-  l = (" "):rep(left) .. l .. (" "):rep(2 * PANE_W - left - vim.api.nvim_strwidth(l))
-  header_left[#header_left + 1] = vim.fn.strcharpart(l, 0, PANE_W)
-  header_right[#header_right + 1] = vim.fn.strcharpart(l, PANE_W)
+-- Sized for the widest header, so the layout is the same whichever one comes up.
+local PANE_W = 55
+for _, title in pairs(titles) do
+  PANE_W = math.max(PANE_W, math.ceil(logo_width(logo_lines(title)) / 2))
 end
 
--- Random Pokémon from this list (pokemon-colorscripts sprites), drawn as highlighted text
--- (a terminal section flickers while the dashboard lays out)
+local function header(title)
+  local lines = logo_lines(title)
+  local w = logo_width(lines)
+  local h = { title = title, lines = lines, left = {}, right = {} }
+  for _, l in ipairs(lines) do
+    local left = math.floor((2 * PANE_W - w) / 2)
+    l = (" "):rep(left) .. l .. (" "):rep(2 * PANE_W - left - vim.api.nvim_strwidth(l))
+    h.left[#h.left + 1] = vim.fn.strcharpart(l, 0, PANE_W)
+    h.right[#h.right + 1] = vim.fn.strcharpart(l, PANE_W)
+  end
+  return h
+end
+
+-- Random Pokémon from these groups (pokemon-colorscripts sprites), drawn as highlighted
+-- text (a terminal section flickers while the dashboard lays out). Each group lists
+-- the headers its species show with; one is picked at random when there are several.
+-- A group with `odds` is rare: it's rolled first and comes up 1 in `odds` encounters.
 local POKE_DIR = vim.fn.expand("~/.local/share/pokemon-colorscripts")
-local POKEMON = { "gengar", "gastly", "haunter", "spiritomb", "darkrai" }
+local POKEMON = {
+  { titles = { titles.honey }, odds = 100, "munchlax" },
+  { titles = { titles.red, titles.purple }, "gengar", "gastly", "haunter", "spiritomb", "dusknoir" },
+  { titles = { titles.elite }, "venusaur", "torterra" },
+  { titles = { titles.isometric }, "porygon", "porygon2", "porygon-z" },
+}
+-- the common groups flattened, so every species is equally likely whatever the size of its group
+local SPECIES = {}
+for _, group in ipairs(POKEMON) do
+  for _, name in ipairs(group.odds and {} or group) do
+    SPECIES[#SPECIES + 1] = { name = name, titles = group.titles }
+  end
+end
 -- rolled on every dashboard open, like a wild encounter. 1 in 8192 is full odds
 -- in Gen 2-5, where all of these come from (Gen 6+ games use 4096)
 local SHINY_ODDS = 8192
@@ -98,14 +155,25 @@ local function roll(n)
   return (b:byte(1) * 2 ^ 24 + b:byte(2) * 2 ^ 16 + b:byte(3) * 2 ^ 8 + b:byte(4)) % n + 1
 end
 
--- pick a species and roll for shiny; falls back to regular if there's no shiny sprite
+local function species()
+  for _, group in ipairs(POKEMON) do
+    if group.odds and roll(group.odds) == 1 then
+      return { name = group[roll(#group)], titles = group.titles }
+    end
+  end
+  return SPECIES[roll(#SPECIES)]
+end
+
+-- pick a species, one of its headers, and roll for shiny; falls back to regular
+-- if there's no shiny sprite. Returns the sprite file and the header
 local function encounter()
   local dir = POKE_DIR .. "/colorscripts/small/"
-  local name = POKEMON[roll(#POKEMON)]
-  if roll(SHINY_ODDS) == 1 and vim.fn.filereadable(dir .. "shiny/" .. name) == 1 then
-    return dir .. "shiny/" .. name
+  local mon = species()
+  local title = mon.titles[roll(#mon.titles)]
+  if roll(SHINY_ODDS) == 1 and vim.fn.filereadable(dir .. "shiny/" .. mon.name) == 1 then
+    return dir .. "shiny/" .. mon.name, title
   end
-  return dir .. "regular/" .. name
+  return dir .. "regular/" .. mon.name, title
 end
 
 local function sprite(file)
@@ -166,6 +234,7 @@ local BOUNCE_MS = 400
 local bounce = 0 -- 0 = up, 1 = down
 local timer
 local poke = false -- parsed sprite, cached across bounce redraws; false = roll a new one
+local logo -- header for the current encounter, from header()
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "SnacksDashboardOpened",
@@ -248,9 +317,9 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 local function logo_hl()
-  vim.api.nvim_set_hl(0, "DashboardLogo", title.color and { fg = title.color } or { link = "SnacksDashboardHeader" })
+  local color = logo and logo.title.color
+  vim.api.nvim_set_hl(0, "DashboardLogo", color and { fg = color } or { link = "SnacksDashboardHeader" })
 end
-logo_hl()
 vim.api.nvim_create_autocmd("ColorScheme", { callback = logo_hl })
 
 -- sprite text for the current bounce frame
@@ -266,9 +335,12 @@ end
 
 local function sections()
   if poke == false then
-    poke = sprite(encounter())
+    local file, title = encounter()
+    poke = sprite(file)
+    logo = header(title)
+    logo_hl()
   end
-  local function logo(l, extra)
+  local function section(l, extra)
     return vim.tbl_extend("force", { text = { { table.concat(l, "\n"), hl = "DashboardLogo" } }, padding = 2 }, extra or {})
   end
   local files = { icon = " ", title = "Recent Files", section = "recent_files", cwd = true, limit = 8, indent = 2, padding = 1 }
@@ -276,7 +348,7 @@ local function sections()
   -- window too narrow for two columns: stack everything, full header on top
   if vim.o.columns < 2 * PANE_W then
     return {
-      logo(lines, { align = "center" }),
+      section(logo.lines, { align = "center" }),
       files,
       poke and { text = poke_frame(), align = "center" } or { enabled = false },
     }
@@ -284,8 +356,8 @@ local function sections()
 
   files.pane = 2
   return {
-    logo(header_left, { pane = 1 }),
-    logo(header_right, { pane = 2 }),
+    section(logo.left, { pane = 1 }),
+    section(logo.right, { pane = 2 }),
     poke and { pane = 1, text = poke_frame(), align = "center" } or { enabled = false },
     files,
   }
