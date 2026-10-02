@@ -43,7 +43,7 @@ func List(w io.Writer, dir string) error {
 }
 
 // ConfigDir picks the neovim config to read: the one given, else the one
-// this binary lives in (it is built into <config>/setup/hex), else
+// this binary lives in (it is built into <config>/tools/hex), else
 // $XDG_CONFIG_HOME/nvim or ~/.config/nvim.
 func ConfigDir(given string) string {
 	if given != "" {

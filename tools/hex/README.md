@@ -12,9 +12,9 @@ binding you add or change shows up without rebuilding anything.
 `prefix + Space` in tmux (see `setup/dotfiles/tmux.conf`), or run it directly:
 
 ```bash
-~/.config/nvim/setup/hex/hex          # full screen
-~/.config/nvim/setup/hex/hex --popup  # inside a tmux popup: the popup's border frames it
-~/.config/nvim/setup/hex/hex --list   # print every binding, for grep
+~/.config/nvim/tools/hex/hex          # full screen
+~/.config/nvim/tools/hex/hex --popup  # inside a tmux popup: the popup's border frames it
+~/.config/nvim/tools/hex/hex --list   # print every binding, for grep
 ```
 
 ### Keys
@@ -47,7 +47,7 @@ always Git, anything about diagnostics is Diagnostics). The rules are in
 ## Development
 
 ```bash
-cd ~/.config/nvim/setup/hex
+cd ~/.config/nvim/tools/hex
 go run .                                # run
 go test ./...                           # test (against the small config in testdata/)
 go build -ldflags="-s -w" -o hex .  # build the binary tmux opens (apple silicon)

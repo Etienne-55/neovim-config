@@ -35,7 +35,8 @@ repo — commit it and the next machine gets it.
 | `dotfiles/gitconfig` | `~/.gitconfig` |
 | `dotfiles/tmux-cht.sh` | `~/.tmux-cht.sh` (prefix + i cheat sheet) |
 | `dotfiles/claude-settings.json` | `~/.claude/settings.json` (Claude Code settings, including the sounds it plays when it's done) |
-| `gaufre/gaufre` | stays here; `~/.tmux.conf` opens it in a popup with prefix + e (apple silicon build) |
-| `hex/hex` | stays here; `~/.tmux.conf` opens it in a popup with prefix + Space — a cheat sheet of every binding in this config, read live from it (source next to it, apple silicon build) |
 
 
+
+The tmux popups prefix + e (gaufre) and prefix + Space (hex) run the binaries in
+`../tools/` straight from the repo, so they need no install step.
