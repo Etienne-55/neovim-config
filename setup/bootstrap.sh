@@ -61,6 +61,9 @@ link tmux-cht-command   "$HOME/.tmux-cht-command"
 # real dir (not a symlink into this repo) so claude doesn't think it's in a git project
 mkdir -p "$HOME/.claude-chat"
 link claude-chat.md "$HOME/.claude-chat/CLAUDE.md"
+# claude code settings, including the sounds it plays when it's done
+mkdir -p "$HOME/.claude"
+link claude-settings.json "$HOME/.claude/settings.json"
 
 # --------------------------------------------------------------------- tmux
 TPM="$HOME/.tmux/plugins/tpm"
@@ -101,14 +104,13 @@ cat <<'EOF'
 Done. Still to do by hand:
 
   1. Restart your terminal (or: exec zsh) so the new shell config loads.
-  2. WezTerm: set the font to MesloLGS NF in the terminal's settings if icons look wrong.
-  3. GitHub: create an ssh key and add it to your account
+  2. GitHub: create an ssh key and add it to your account
        ssh-keygen -t ed25519 -C "your@email"
        cat ~/.ssh/id_ed25519.pub
-  4. Claude Code, if you want it:
+  3. Claude Code, if you want it:
        curl -fsSL https://claude.ai/install.sh | bash
        then add to ~/.zshrc: export PATH="$HOME/.local/bin:$PATH"
-  5. Open neovim once and let treesitter finish installing parsers.
+  4. Open neovim once and let treesitter finish installing parsers.
 
 Optional, makes vim navigation much nicer (needs a logout to take effect):
   defaults write -g KeyRepeat -int 2

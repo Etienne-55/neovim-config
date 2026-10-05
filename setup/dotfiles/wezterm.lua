@@ -114,7 +114,7 @@ config.keys = {
 -- Load user-installed fonts directly, even if macOS hasn't indexed them yet
 config.font_dirs = { wezterm.home_dir .. "/Library/Fonts" }
 config.font = wezterm.font_with_fallback({
-	"MesloLGS Nerd Font Mono",
+	"JetBrains Mono",
 	"Symbols Nerd Font Mono",
 })
 config.font_size = 19

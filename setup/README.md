@@ -34,6 +34,7 @@ repo — commit it and the next machine gets it.
 | `dotfiles/wezterm.lua` | `~/.wezterm.lua` |
 | `dotfiles/gitconfig` | `~/.gitconfig` |
 | `dotfiles/tmux-cht.sh` | `~/.tmux-cht.sh` (prefix + i cheat sheet) |
+| `dotfiles/claude-settings.json` | `~/.claude/settings.json` (Claude Code settings, including the sounds it plays when it's done) |
 | `gaufre/gaufre` | stays here; `~/.tmux.conf` opens it in a popup with prefix + e (apple silicon build) |
 | `hex/hex` | stays here; `~/.tmux.conf` opens it in a popup with prefix + Space — a cheat sheet of every binding in this config, read live from it (source next to it, apple silicon build) |
 
