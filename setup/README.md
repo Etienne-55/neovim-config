@@ -13,16 +13,17 @@ the `brew bundle` step.
 ## What the script does
 
 1. Installs the Xcode command line tools and Homebrew if they're missing.
-2. Installs everything in `Brewfile` (16 formulas, 3 casks) — just what neovim,
+2. Installs everything in `Brewfile` (16 formulas, 2 casks) — just what neovim,
    wezterm and the dotfiles need: neovim, git, lazygit, ripgrep, fd, eza, node,
    go, tree-sitter, tmux, fzf, zoxide, git-delta, powerlevel10k,
-   zsh-autosuggestions, zsh-syntax-highlighting, the nerd fonts and wezterm.
+   zsh-autosuggestions, zsh-syntax-highlighting, the symbols nerd font and wezterm.
 3. Symlinks the dotfiles in `dotfiles/` into your home folder, backing up
    anything already there into `~/.dotfiles-backup/<date>/`.
 4. Adds an `[include]` of `dotfiles/gitconfig` to the top of `~/.gitconfig`,
    keeping everything already in it.
 5. Installs tmux's plugin manager and your tmux plugins.
-6. Installs the neovim plugins, language servers and formatters.
+6. Installs pokemon-colorscripts (the random Pokémon on the neovim dashboard).
+7. Installs the neovim plugins, language servers and formatters.
 
 Because the dotfiles are **symlinks**, editing `~/.zshrc` edits the copy in this
 repo — commit it and the next machine gets it.

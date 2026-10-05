@@ -17,17 +17,8 @@ return {
   -- no nvim-cmp: it serves completions as an in-process LSP server, which cmp-nvim-lsp picks up
   dependencies = { "nvim-treesitter/nvim-treesitter" },
   opts = {
-    enable_on = {
-      "html",
-      "htmlangular",
-      "htmldjango",
-      "javascriptreact",
-      "typescriptreact",
-      "vue",
-      "svelte",
-      "php",
-      "astro",
-    },
+    -- file extensions, not filetypes (it matches "*.<ext>"); angular/django templates are *.html
+    enable_on = { "html", "jsx", "tsx", "vue", "svelte", "php", "astro" },
     documentation = { auto_show = true },
     -- stylesheets available in every file, even without a <link> tag
     style_sheets = {
@@ -39,8 +30,19 @@ return {
     -- setup() runs ./.nvim.lua (its per-project config) with a bare dofile(), so a cloned
     -- repo's file ran unasked, and it switches 'exrc' on for the rest of the session.
     -- Only run that file once it's trusted (the vim.secure.read prompt, or :trust), and
-    -- put 'exrc' back
-    local exrc, run_file = vim.o.exrc, dofile
+    -- put 'exrc' back.
+    -- It also runs `runtime! plugin/**`, which with ft-loading would re-run every already
+    -- loaded plugin/ script mid-session (double keymaps/handlers); lazy.nvim has already
+    -- sourced them, so skip just that call
+    local exrc, run_file, cmd = vim.o.exrc, dofile, vim.cmd
+    vim.cmd = setmetatable({}, {
+      __index = cmd,
+      __call = function(_, c, ...)
+        if c ~= "runtime! plugin/**/*.{vim,lua}" then
+          return cmd(c, ...)
+        end
+      end,
+    })
     dofile = function(path)
       local code = vim.secure.read(path)
       if code then
@@ -48,7 +50,7 @@ return {
       end
     end
     local ok, err = pcall(require("html-css").setup, opts)
-    dofile, vim.o.exrc = run_file, exrc
+    dofile, vim.o.exrc, vim.cmd = run_file, exrc, cmd
     assert(ok, err)
   end,
 }

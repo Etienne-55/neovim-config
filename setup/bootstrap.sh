@@ -72,7 +72,7 @@ link claude-settings.json "$HOME/.claude/settings.json"
 include_gitconfig() {
   src="$DOTFILES/gitconfig"
   dest="$HOME/.gitconfig"
-  if [ ! -L "$dest" ] && git config --file "$dest" --get-all include.path 2>/dev/null | grep -xF "$src" >/dev/null; then
+  if [ ! -L "$dest" ] && git config --file "$dest" --type=path --get-all include.path 2>/dev/null | grep -xF "$src" >/dev/null; then
     log "already included: $src"
     return
   fi
@@ -80,7 +80,7 @@ include_gitconfig() {
   {
     printf '[include]\n\tpath = %s\n' "$src"
     # keep what's there, unless it's the symlink into this repo that older versions made
-    if [ -f "$dest" ] && [ "$(readlink "$dest")" != "$src" ]; then
+    if [ -f "$dest" ] && ! [ "$dest" -ef "$src" ]; then
       cat "$dest"
     fi
   } > "$tmp"

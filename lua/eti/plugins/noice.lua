@@ -87,7 +87,7 @@ return {
         opts = { timeout = 5000 },
       },
       -- output taller than the mini view (:ls, :map, :reg, :lua print(...), :!cmd, ...)
-      -- opens in a split at the bottom instead of being cut to 3 lines; q in it closes it
+      -- opens in a split at the bottom instead of being cut to 3 lines (<C-w>j to get into it, q closes it)
       {
         filter = {
           event = "msg_show",
