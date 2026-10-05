@@ -54,7 +54,6 @@ link zshrc       "$HOME/.zshrc"
 link p10k.zsh    "$HOME/.p10k.zsh"
 link tmux.conf   "$HOME/.tmux.conf"
 link wezterm.lua "$HOME/.wezterm.lua"
-link gitconfig   "$HOME/.gitconfig"
 link tmux-cht.sh "$HOME/.tmux-cht.sh"
 link tmux-cht-languages "$HOME/.tmux-cht-languages"
 link tmux-cht-command   "$HOME/.tmux-cht-command"
@@ -64,6 +63,36 @@ link claude-chat.md "$HOME/.claude-chat/CLAUDE.md"
 # claude code settings, including the sounds it plays when it's done
 mkdir -p "$HOME/.claude"
 link claude-settings.json "$HOME/.claude/settings.json"
+
+# ----------------------------------------------------------------------- git
+# Not a symlink: ~/.gitconfig stays a real file for this machine's own settings
+# (identity, core.hooksPath, git-lfs, ...) and pulls in dotfiles/gitconfig with an
+# [include] at the top, so whatever is set below it wins. Re-running never replaces
+# it, and `git config --global` writes land there instead of in this repo.
+include_gitconfig() {
+  src="$DOTFILES/gitconfig"
+  dest="$HOME/.gitconfig"
+  if [ ! -L "$dest" ] && git config --file "$dest" --get-all include.path 2>/dev/null | grep -xF "$src" >/dev/null; then
+    log "already included: $src"
+    return
+  fi
+  tmp="$dest.bootstrap-tmp"
+  {
+    printf '[include]\n\tpath = %s\n' "$src"
+    # keep what's there, unless it's the symlink into this repo that older versions made
+    if [ -f "$dest" ] && [ "$(readlink "$dest")" != "$src" ]; then
+      cat "$dest"
+    fi
+  } > "$tmp"
+  if [ -e "$dest" ] || [ -L "$dest" ]; then
+    mkdir -p "$BACKUP_DIR"
+    mv "$dest" "$BACKUP_DIR/"
+    warn "added the include to your $dest, previous version in $BACKUP_DIR"
+  fi
+  mv "$tmp" "$dest"
+  log "included $src from $dest"
+}
+include_gitconfig
 
 # --------------------------------------------------------------------- tmux
 TPM="$HOME/.tmux/plugins/tpm"

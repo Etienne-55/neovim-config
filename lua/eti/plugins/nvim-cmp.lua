@@ -75,12 +75,27 @@ return {
         ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
         ["<C-e>"] = cmp.mapping.abort(), -- close completion window
         ["<CR>"] = cmp.mapping.confirm({ select = false }),
+        -- next / previous snippet placeholder (snippets and LSP function arguments): nvim's own
+        -- <Tab> only jumps vim.snippet, not LuaSnip; a plain Tab everywhere else
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.locally_jumpable(1) then
+            luasnip.jump(1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.locally_jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
       }),
       -- sources for autocompletion
       sources = cmp.config.sources({
         { name = "lazydev", group_index = 0 }, -- neovim lua api (lazydev.nvim)
-        { name = "nvim_lsp"},
-        { name = "html-css" }, -- css class names (bootstrap, ...) in class="..."
+        { name = "nvim_lsp"}, -- also css class names in class="..." (html-css runs as an LSP server)
         {
           name = "luasnip", -- snippets
           -- snippets insert their whole text ("console.log()", "<span></span>"), so hide them

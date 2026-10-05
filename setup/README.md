@@ -13,16 +13,23 @@ the `brew bundle` step.
 ## What the script does
 
 1. Installs the Xcode command line tools and Homebrew if they're missing.
-2. Installs everything in `Brewfile` (9 formulas, 3 casks) — just what neovim
-   and wezterm need: neovim, git, lazygit, ripgrep, fd, eza, node, go,
-   tree-sitter, the nerd fonts and wezterm.
+2. Installs everything in `Brewfile` (16 formulas, 3 casks) — just what neovim,
+   wezterm and the dotfiles need: neovim, git, lazygit, ripgrep, fd, eza, node,
+   go, tree-sitter, tmux, fzf, zoxide, git-delta, powerlevel10k,
+   zsh-autosuggestions, zsh-syntax-highlighting, the nerd fonts and wezterm.
 3. Symlinks the dotfiles in `dotfiles/` into your home folder, backing up
    anything already there into `~/.dotfiles-backup/<date>/`.
-4. Installs tmux's plugin manager and your tmux plugins.
-5. Installs the neovim plugins, language servers and formatters.
+4. Adds an `[include]` of `dotfiles/gitconfig` to the top of `~/.gitconfig`,
+   keeping everything already in it.
+5. Installs tmux's plugin manager and your tmux plugins.
+6. Installs the neovim plugins, language servers and formatters.
 
 Because the dotfiles are **symlinks**, editing `~/.zshrc` edits the copy in this
 repo — commit it and the next machine gets it.
+
+`~/.gitconfig` is the exception: it stays a real file for this machine's own
+settings (identity, `core.hooksPath`, git-lfs, ...), which override the shared
+ones, and `git config --global` writes there, never into this repo.
 
 ## Files
 
@@ -32,7 +39,7 @@ repo — commit it and the next machine gets it.
 | `dotfiles/p10k.zsh` | `~/.p10k.zsh` (powerlevel10k prompt) |
 | `dotfiles/tmux.conf` | `~/.tmux.conf` |
 | `dotfiles/wezterm.lua` | `~/.wezterm.lua` |
-| `dotfiles/gitconfig` | `~/.gitconfig` |
+| `dotfiles/gitconfig` | included from `~/.gitconfig` |
 | `dotfiles/tmux-cht.sh` | `~/.tmux-cht.sh` (prefix + i cheat sheet) |
 | `dotfiles/claude-settings.json` | `~/.claude/settings.json` (Claude Code settings, including the sounds it plays when it's done) |
 

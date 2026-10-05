@@ -74,7 +74,28 @@ return {
         },
         view = "mini",
       },
-      -- Make other messages use mini view by default
+      -- errors, and warnings sent with vim.notify, stay up 5s instead of the 0.5s above
+      -- (missed ones are in :Noice errors)
+      {
+        filter = { error = true },
+        view = "notify",
+        opts = { title = "Error", timeout = 5000 },
+      },
+      {
+        filter = { event = "notify", warning = true },
+        view = "notify",
+        opts = { timeout = 5000 },
+      },
+      -- output taller than the mini view (:ls, :map, :reg, :lua print(...), :!cmd, ...)
+      -- opens in a split at the bottom instead of being cut to 3 lines; q in it closes it
+      {
+        filter = {
+          event = "msg_show",
+          min_height = 4,
+        },
+        view = "cmdline_output",
+      },
+      -- Make other (short) messages use mini view by default
       {
         filter = {
           event = "msg_show",

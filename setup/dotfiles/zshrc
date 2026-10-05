@@ -61,8 +61,11 @@ alias fs='nvim "+Pick live_grep"'
 # fuzzy find files in cwd (same as <space>ff in nvim)
 alias ff='nvim "+Pick find_files"'
 
-export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+# java 17, when it's installed (brew install openjdk@17; it's not in the Brewfile)
+if [[ -d /opt/homebrew/opt/openjdk@17 ]]; then
+  export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
 
 # puppeteer: use the arm64 Chromium build (karma tests)
 export PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM=1

@@ -61,7 +61,16 @@ return {
     lazygit = { enabled = true }, -- floating lazygit window
   },
   keys = {
-    { "<leader>lg", function() Snacks.lazygit() end, desc = "Open lazygit" },
+    {
+      "<leader>lg",
+      function()
+        -- save first: lazygit sees what's in nvim, and clean buffers get reloaded
+        -- by core/autoreload when lazygit discards/undoes (dirty ones are skipped)
+        vim.cmd("silent! wall")
+        Snacks.lazygit()
+      end,
+      desc = "Save all and open lazygit",
+    },
     { "<leader>rf", function() Snacks.rename.rename_file() end, desc = "Rename current file (LSP-aware)" },
     { "<leader>tn", function() Snacks.toggle.option("relativenumber", { name = "Relative Number" }):toggle() end, desc = "Toggle relative line numbers" },
     {
@@ -91,7 +100,7 @@ return {
           local pat = "\\V" .. vim.fn.escape(word, "\\/"):gsub("\n", "\\n")
           if whole then pat = "\\V\\<" .. pat:sub(3) .. "\\>" end
           local view = vim.fn.winsaveview()
-          vim.cmd("keeppatterns %s/" .. pat .. "/" .. vim.fn.escape(repl, "\\/&~") .. "/ge")
+          vim.cmd("keeppatterns %s/" .. pat .. "/" .. vim.fn.escape(repl, "\\/&~") .. "/geI")
           vim.fn.winrestview(view)
         end)
       end,

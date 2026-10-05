@@ -25,7 +25,8 @@ return {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
     ft = { "markdown" },
-    build = "cd app && yarn install",
+    -- yarn isn't in the Brewfile: use it when installed, otherwise run it through npx (comes with node)
+    build = "cd app && if command -v yarn >/dev/null 2>&1; then yarn install; else npx --yes yarn install; fi",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_theme = "dark"

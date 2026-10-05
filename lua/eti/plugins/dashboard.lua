@@ -135,7 +135,7 @@ local POKEMON = {
   { titles = { titles.honey }, odds = 100, "munchlax" },
   { titles = { titles.red, titles.purple }, "gengar", "gastly", "haunter", "spiritomb", "dusknoir" },
   { titles = { titles.elite }, "venusaur", "torterra" },
-  { titles = { titles.isometric }, "porygon", "porygon2", "porygon-z" },
+  { titles = { titles.isometric }, "porygon" },
 }
 -- the common groups flattened, so every species is equally likely whatever the size of its group
 local SPECIES = {}
