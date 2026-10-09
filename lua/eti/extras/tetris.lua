@@ -11,7 +11,7 @@ local lines = 0
 
 -- ---------------------------------------------------------------- music ---
 
-local song = require("eti.tetris_song")
+local song = require("eti.extras.tetris_song")
 -- job: the afplay process; pending: position to start from once the songs are
 -- rendered; paused_at: position to resume from; muted: `m`, for the session (off by default)
 local music = { job = nil, pending = nil, paused_at = nil, rendering = false, poll = nil, song = 1, speed = "normal", muted = true }
@@ -64,7 +64,7 @@ local function render()
     return
   end
   music.rendering = true
-  local cmd = { vim.v.progpath, "--clean", "-l", api.nvim_get_runtime_file("lua/eti/tetris_song.lua", false)[1] }
+  local cmd = { vim.v.progpath, "--clean", "-l", api.nvim_get_runtime_file("lua/eti/extras/tetris_song.lua", false)[1] }
   for _, track in ipairs(all_tracks) do
     if not uv.fs_stat(track.path) then
       vim.list_extend(cmd, { track.path, track.id, tostring(track.bpm) })

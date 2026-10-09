@@ -1,6 +1,10 @@
 return {
   {
     "folke/zen-mode.nvim",
+    cmd = "ZenMode",
+    keys = {
+      { "<leader>zz", function() require("zen-mode").toggle() end, desc = "Toggle Zen Mode" },
+    },
     config = function()
       local diagnostic_config, hints_were_on
 

@@ -19,20 +19,4 @@ return {
       },
     },
   },
-
-  -- live preview in the browser, scroll-synced with the buffer
-  {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
-    ft = { "markdown" },
-    -- yarn isn't in the Brewfile: use it when installed, otherwise run it through npx (comes with node)
-    build = "cd app && if command -v yarn >/dev/null 2>&1; then yarn install; else npx --yes yarn install; fi",
-    init = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-      vim.g.mkdp_theme = "dark"
-    end,
-    keys = {
-      { "<leader>mv", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Toggle markdown preview in browser" },
-    },
-  },
 }

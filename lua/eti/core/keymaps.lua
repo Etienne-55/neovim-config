@@ -33,3 +33,10 @@ end
 for _, key in ipairs({ "<PageUp>", "<S-Up>" }) do
   keymap.set({ "n", "x" }, key, "<C-u>zz")
 end
+
+-- search: keep the match centered; <Esc> clears the highlight
+keymap.set("n", "n", "nzz")
+keymap.set("n", "N", "Nzz")
+keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlighting" })
+
+keymap.set("n", "<leader>T", vim.treesitter.inspect_tree, { desc = "Inspect Treesitter tree" })
