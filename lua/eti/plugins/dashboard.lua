@@ -363,11 +363,17 @@ local function sections()
   }
 end
 
+-- the shell aliases (`nvim "+Pick find_files"`) go straight to a picker; the
+-- dashboard would only show through behind it
+local from_pick = vim.iter(vim.v.argv):any(function(a)
+  return vim.startswith(a, "+Pick")
+end)
+
 return {
   "folke/snacks.nvim",
   opts = {
     dashboard = {
-      enabled = true,
+      enabled = not from_pick,
       width = PANE_W,
       pane_gap = 0,
       sections = { sections },

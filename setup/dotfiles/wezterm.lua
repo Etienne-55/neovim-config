@@ -115,6 +115,8 @@ config.keys = {
 config.font_dirs = { wezterm.home_dir .. "/Library/Fonts" }
 config.font = wezterm.font_with_fallback({
 	"JetBrains Mono",
+	-- icons: wezterm's bundled Symbols Nerd Font is v3.1 and lacks newer glyphs (e.g. the tmux RAM icon U+EFC5)
+	"MesloLGS Nerd Font Mono",
 	"Symbols Nerd Font Mono",
 })
 config.font_size = 19

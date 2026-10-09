@@ -103,14 +103,120 @@ return {
         :find()
     end
 
+    -- files a commit touched, opened in their current (working tree) state;
+    -- files deleted or renamed since then are skipped
+    local function commit_files(sha, back)
+      local root = vim.fn.systemlist({ "git", "rev-parse", "--show-toplevel" })[1]
+      local files = vim.tbl_filter(function(file)
+        return vim.fn.filereadable(root .. "/" .. file) == 1
+      end, vim.fn.systemlist({ "git", "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha }))
+      if #files == 0 then
+        vim.notify("None of the files in " .. sha .. " exist anymore", vim.log.levels.WARN)
+        return back()
+      end
+      pickers
+        .new({}, {
+          prompt_title = "Files of " .. sha,
+          finder = finders.new_table({
+            results = files,
+            entry_maker = require("telescope.make_entry").gen_from_file({ cwd = root }),
+          }),
+          sorter = conf.file_sorter({}),
+          previewer = conf.file_previewer({}),
+          -- <Esc> goes back to the commit list
+          attach_mappings = function(prompt_bufnr, map)
+            map({ "i", "n" }, "<Esc>", function()
+              actions.close(prompt_bufnr)
+              back()
+            end)
+            return true
+          end,
+        })
+        :find()
+    end
+
+    -- browse commits (diff preview); <cr> lists the commit's files instead of checking it out
+    local function commits(opts, from_shell)
+      opts.attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          local picker = action_state.get_current_picker(prompt_bufnr)
+          -- reopened with the same search and selection when coming back from the files
+          local reopen = vim.tbl_extend("force", opts, {
+            default_text = picker:_get_prompt(),
+            default_selection_index = picker:get_index(picker:get_selection_row()),
+          })
+          local sha = action_state.get_selected_entry().value
+          actions.close(prompt_bufnr)
+          commit_files(sha, function()
+            commits(reopen, from_shell)
+          end)
+        end)
+        if from_shell then
+          quit_on_escape(prompt_bufnr, map)
+        end
+        return true
+      end
+      builtin.git_commits(opts)
+    end
+
+    local function my_commits(from_shell)
+      local me = vim.fn.systemlist({ "git", "config", "user.email" })[1]
+      commits({
+        prompt_title = "My commits",
+        git_command = { "git", "log", "--pretty=oneline", "--abbrev-commit", "--author=" .. me, "--", "." },
+      }, from_shell)
+    end
+
+    -- pickers of this file that `:Pick` can open, besides the builtins
+    local own_pickers = {
+      directory = find_directory,
+      commits = function(from_shell)
+        commits({}, from_shell)
+      end,
+      my_commits = my_commits,
+    }
+
     vim.api.nvim_create_user_command("FindDirectory", function()
       find_directory()
     end, { desc = "Pick a directory" })
 
     -- entry point for the shell aliases: `nvim "+Pick find_files"`
     vim.api.nvim_create_user_command("Pick", function(o)
-      if o.args == "directory" then
-        return find_directory(true)
+      -- launched from the shell on the empty startup buffer: black behind the
+      -- picker, until a file is opened in that window
+      local win, buf = vim.api.nvim_get_current_win(), vim.api.nvim_get_current_buf()
+      if vim.api.nvim_buf_get_name(buf) == "" and not vim.bo[buf].modified then
+        vim.api.nvim_set_hl(0, "PickBackdrop", { bg = "#000000", fg = "#000000" })
+        local blank = {
+          winhighlight = "Normal:PickBackdrop,NormalNC:PickBackdrop,EndOfBuffer:PickBackdrop",
+          number = false,
+          relativenumber = false,
+          cursorline = false,
+          signcolumn = "no",
+          foldcolumn = "0",
+          statuscolumn = "",
+        }
+        local saved = {}
+        for opt, value in pairs(blank) do
+          saved[opt] = vim.wo[win][opt]
+          vim.wo[win][opt] = value
+        end
+        local laststatus = vim.o.laststatus
+        vim.o.laststatus = 0
+        vim.api.nvim_create_autocmd("BufWinEnter", {
+          callback = function()
+            if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) ~= buf then
+              for opt, value in pairs(saved) do
+                vim.wo[win][opt] = value
+              end
+              vim.o.laststatus = laststatus
+              return true
+            end
+          end,
+        })
+      end
+      if own_pickers[o.args] then
+        return own_pickers[o.args](true)
       end
       if type(builtin[o.args]) ~= "function" then
         return vim.notify("Pick: no such picker: " .. o.args, vim.log.levels.ERROR)
@@ -120,7 +226,7 @@ return {
       nargs = 1,
       desc = "Open a picker whose <Esc> quits nvim",
       complete = function(lead)
-        local names = { "directory" }
+        local names = vim.tbl_keys(own_pickers)
         for name, fn in pairs(builtin) do
           if type(fn) == "function" then
             names[#names + 1] = name
@@ -144,7 +250,12 @@ return {
 
     -- git (previews show the diff)
     keymap.set("n", "<leader>gd", "<cmd>Telescope git_status<cr>", { desc = "Changed files with diff preview" })
-    keymap.set("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Browse commits with diff preview" })
+    keymap.set("n", "<leader>gc", function()
+      commits({})
+    end, { desc = "Browse commits, <cr> lists their files" })
+    keymap.set("n", "<leader>gm", function()
+      my_commits()
+    end, { desc = "Browse my commits, <cr> lists their files" })
     keymap.set("n", "<leader>gb", "<cmd>Telescope git_bcommits<cr>", { desc = "Browse buffer commits with diff preview" })
     keymap.set("n", "<leader>gB", "<cmd>Telescope git_branches<cr>", { desc = "Browse git branches" })
   end,
