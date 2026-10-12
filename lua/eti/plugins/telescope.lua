@@ -220,9 +220,12 @@ return {
         end
         local laststatus = vim.o.laststatus
         vim.o.laststatus = 0
+        -- `:edit` reuses the empty startup buffer (same number), so it gaining a
+        -- name counts as a file being opened too
         vim.api.nvim_create_autocmd("BufWinEnter", {
           callback = function()
-            if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) ~= buf then
+            local shown = vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win)
+            if shown and (shown ~= buf or vim.api.nvim_buf_get_name(buf) ~= "") then
               for opt, value in pairs(saved) do
                 vim.wo[win][opt] = value
               end

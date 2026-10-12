@@ -104,9 +104,60 @@ wezterm.on("toggle-theme", function(window)
 	window:set_config_overrides(overrides)
 end)
 
+-- Cmd+key runs a tmux prefix binding (sends C-b then the key), so the tmux.conf binds stay the source of truth
+local function tmux(key)
+	return wezterm.action.SendString("\x02" .. key)
+end
+
 config.keys = {
 	{ key = "t", mods = "CMD|ALT", action = wezterm.action.EmitEvent("toggle-theme") },
+	-- Cmd+arrows send Ctrl+h/j/k/l: vim-tmux-navigator moves across nvim splits and tmux panes
+	{ key = "LeftArrow", mods = "CMD", action = wezterm.action.SendKey({ key = "h", mods = "CTRL" }) },
+	{ key = "DownArrow", mods = "CMD", action = wezterm.action.SendKey({ key = "j", mods = "CTRL" }) },
+	{ key = "UpArrow", mods = "CMD", action = wezterm.action.SendKey({ key = "k", mods = "CTRL" }) },
+	{ key = "RightArrow", mods = "CMD", action = wezterm.action.SendKey({ key = "l", mods = "CTRL" }) },
+	-- Cmd+Shift+arrows resize the tmux pane
+	{ key = "LeftArrow", mods = "CMD|SHIFT", action = tmux("H") },
+	{ key = "DownArrow", mods = "CMD|SHIFT", action = tmux("J") },
+	{ key = "UpArrow", mods = "CMD|SHIFT", action = tmux("K") },
+	{ key = "RightArrow", mods = "CMD|SHIFT", action = tmux("L") },
+
+	-- panes (replaces font size on Cmd -/=; Ctrl -/= still zoom the font)
+	{ key = "-", mods = "CMD", action = tmux("-") }, -- split, new pane below
+	{ key = "=", mods = "CMD", action = tmux("%") }, -- Cmd+ split, new pane to the right
+	{ key = "+", mods = "CMD|SHIFT", action = tmux("%") },
+	{ key = "d", mods = "CMD", action = tmux("x") }, -- delete pane, no confirm
+	{ key = "z", mods = "CMD", action = tmux("v") }, -- nvim in a new window
+	{ key = "Backspace", mods = "CMD", action = tmux("z") }, -- zoom pane (toggle)
+	{ key = "[", mods = "CMD", action = tmux("[") }, -- copy mode (scroll / search)
+
+	-- windows (tmux windows act as tabs; the WezTerm tab bar is hidden)
+	-- a s d sit next to the z x c v edit keys, which keep their usual meaning
+	{ key = "s", mods = "CMD", action = tmux("c") }, -- new window
+	{ key = "a", mods = "CMD", action = tmux("n") }, -- next window
+	{ key = "a", mods = "CMD|SHIFT", action = tmux("N") }, -- previous window
+	{ key = "d", mods = "CMD|SHIFT", action = tmux("X") }, -- delete window, no confirm
+	{ key = "w", mods = "CMD", action = tmux("w") }, -- pick a window/session from a tree
+	{ key = ",", mods = "CMD", action = tmux(",") }, -- rename window
+
+	-- popups / tools
+	{ key = "p", mods = "CMD", action = tmux("p") }, -- claude chat
+	{ key = "e", mods = "CMD", action = tmux("e") }, -- gaufre
+	{ key = "i", mods = "CMD", action = tmux("i") }, -- cht.sh
+	{ key = "/", mods = "CMD", action = tmux(" ") }, -- hex cheat sheet (Cmd+Space is Spotlight)
+
+	-- Cmd+r reloads both WezTerm and tmux configs
+	{
+		key = "r",
+		mods = "CMD",
+		action = wezterm.action.Multiple({ wezterm.action.ReloadConfiguration, tmux("r") }),
+	},
 }
+
+-- Cmd+1..9 jump to tmux window N (base-index is 1 in tmux.conf)
+for i = 1, 9 do
+	table.insert(config.keys, { key = tostring(i), mods = "CMD", action = tmux(tostring(i)) })
+end
 
 ----------------------------------------------------------------------
 -- Font

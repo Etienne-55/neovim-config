@@ -27,7 +27,15 @@ end
 
 -- hlsearch paints matches in every window. While the cursor is elsewhere, Claude's window
 -- maps the search groups to an empty one, so / only lights up the file being edited.
-local NO_SEARCH = "Search:ClaudeNoSearch,CurSearch:ClaudeNoSearch,IncSearch:ClaudeNoSearch"
+-- Leaves the Claude terminal in a direction (nvim split, or tmux pane past the edge).
+-- Flagged after the jump (BufLeave would overwrite it) so coming back resumes typing.
+local function navigate(term, dir)
+  vim.cmd.stopinsert()
+  vim.cmd("TmuxNavigate" .. dir)
+  vim.b[term.buf].claude_insert = true
+end
+
+local NO_SEARCH ="Search:ClaudeNoSearch,CurSearch:ClaudeNoSearch,IncSearch:ClaudeNoSearch"
 local function show_search(win, show)
   local hl = vim.wo[win].winhighlight:gsub(",?%a*Search:ClaudeNoSearch", "")
   if not show then
@@ -85,6 +93,14 @@ return {
                 end
               end,
             })
+            -- Where Claude's input is, counted from the bottom so output arriving above
+            -- doesn't shift it; the cursor still sits on it as terminal mode ends.
+            vim.api.nvim_create_autocmd("TermLeave", {
+              buffer = buf,
+              callback = function()
+                vim.b[buf].claude_prompt_from_end = vim.api.nvim_buf_line_count(buf) - vim.fn.line(".")
+              end,
+            })
             vim.api.nvim_set_hl(0, "ClaudeNoSearch", {})
             vim.api.nvim_create_autocmd({ "WinEnter", "WinLeave" }, {
               buffer = buf,
@@ -94,15 +110,35 @@ return {
           keys = {
             term_normal = false, -- let Esc / Esc Esc reach Claude (cancel, rewind); <C-\><C-n> still works
             claude_hide = { "<C-q>", function(self) self:hide() end, mode = "t", desc = "Hide Claude" },
-            -- <C-\><C-n> gets eaten by vim-tmux-navigator's tmux binding, so jump left directly.
+            -- <C-\><C-n> gets eaten by vim-tmux-navigator's tmux binding, so navigate directly
+            -- (into nvim splits or out to tmux panes; wezterm maps Cmd+arrows to these).
             -- Flag set after the jump: left while typing, so come back typing.
-            claude_left = { "<C-h>", function(self)
-              vim.cmd.stopinsert()
-              vim.cmd.wincmd("h")
-              vim.b[self.buf].claude_insert = true
-            end, mode = "t", desc = "Go to left window" },
-            -- same problem for scrolling: normal mode to scroll/search/yank, i to type again
-            claude_normal = { "<C-n>", function() vim.cmd.stopinsert() end, mode = "t", desc = "Normal mode (scroll)" },
+            claude_left = { "<C-h>", function(self) navigate(self, "Left") end, mode = "t", desc = "Go to left window" },
+            claude_down = { "<C-j>", function(self) navigate(self, "Down") end, mode = "t", desc = "Go to lower window" },
+            claude_up = { "<C-k>", function(self) navigate(self, "Up") end, mode = "t", desc = "Go to upper window" },
+            claude_right = { "<C-l>", function(self) navigate(self, "Right") end, mode = "t", desc = "Go to right window" },
+            -- same problem for scrolling: Shift+arrows hop out of the input into the
+            -- conversation (normal mode, to scroll/search/yank) and back into it to type.
+            -- In normal mode Shift+Up is the global centered half-page scroll (core/keymaps).
+            claude_scroll_up = {
+              "<S-Up>",
+              function() vim.api.nvim_feedkeys(vim.keycode("<C-\\><C-n><C-u>zz"), "n", false) end,
+              mode = "t",
+              desc = "Scroll the conversation up",
+            },
+            claude_scroll_down = {
+              "<S-Down>",
+              function(self)
+                local prompt = vim.api.nvim_buf_line_count(self.buf) - (vim.b[self.buf].claude_prompt_from_end or 0)
+                if vim.fn.line(".") + vim.wo.scroll >= prompt then
+                  vim.cmd.startinsert()
+                else
+                  vim.cmd("normal! " .. vim.keycode("<C-d>zz"))
+                end
+              end,
+              mode = "n",
+              desc = "Scroll down, back to typing at the input",
+            },
             claude_sandbox = { "<M-s>", function() send_to_claude("/sandbox", true) end, mode = "t", desc = "Claude sandbox" },
             claude_effort = { "<M-e>", function() send_to_claude("/effort", true) end, mode = "t", desc = "Claude effort" },
           },

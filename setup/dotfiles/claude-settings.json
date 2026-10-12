@@ -1,24 +1,5 @@
 {
   "model": "opus",
-  "enabledPlugins": {
-    "typescript-lsp@claude-plugins-official": true
-  },
-  "modelSettings": {
-    "claude-sonnet-5": {
-      "effortLevel": "high"
-    },
-    "claude-opus-5": {
-      "effortLevel": "high"
-    },
-    "claude-opus-5-5": {
-      "effortLevel": "high"
-    }
-  },
-  "sandbox": {
-    "enabled": true,
-    "allowUnsandboxedCommands": true
-  },
-  "theme": "dark",
   "hooks": {
     "Stop": [
       {
@@ -55,5 +36,24 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": true
+  },
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "theme": "dark"
 }
