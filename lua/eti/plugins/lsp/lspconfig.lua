@@ -8,10 +8,9 @@ return {
     { "b0o/schemastore.nvim", version = false }, -- json/yaml schemas (package.json, tsconfig, ...)
   },
   config = function()
-    -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    local keymap = vim.keymap -- for conciseness
+    local keymap = vim.keymap
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)

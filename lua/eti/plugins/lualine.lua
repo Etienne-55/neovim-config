@@ -56,6 +56,18 @@ return {
         theme = my_lualine_theme,
       },
       sections = {
+        -- filename first; the branch comes after it, truncated (tmux shows the full one)
+        lualine_b = { { "filename", path = 1 } },
+        lualine_c = {
+          {
+            "branch",
+            fmt = function(name)
+              return #name > 20 and name:sub(1, 19) .. "…" or name
+            end,
+          },
+          "diff",
+          "diagnostics",
+        },
         lualine_x = {
           -- show macro recording: noice hides the "recording @q" message, and nvim-autopairs
           -- stops pairing while recording, so an accidental `q` made pairs silently stop working

@@ -16,7 +16,7 @@ func re(s string) *regexp.Regexp { return regexp.MustCompile(s) }
 
 var rules = []rule{
 	// git lives in several plugins: telescope's pickers, snacks' lazygit
-	{lhs: re(`(?i)^<leader>(g|h|lg$)`), cat: Git},
+	{lhs: re(`(?i)^<leader>(g|h)`), cat: Git},
 	{desc: re(`(?i)diagnostic`), cat: Diagnostics},
 
 	{file: re(`^telescope\.lua$`), cat: Telescope},
@@ -26,8 +26,9 @@ var rules = []rule{
 	{file: re(`^claudecode\.lua$`), cat: Claude},
 	{file: re(`^(harpoon|flash|oil|nvim-tree|todo-comments)\.lua$`), cat: Navigation},
 	{file: re(`^nvim-cmp\.lua$`), cat: Completion},
-	{file: re(`^(surround|formatting|treesitter|undo|autopairs|autotag)\.lua$`), cat: Editing},
-	{file: re(`^snacks\.lua$`), desc: re(`(?i)^(rename|replace)`), cat: Editing},
+	{file: re(`^(surround|formatting|treesitter|undotree|autopairs|autotag)\.lua$`), cat: Editing},
+	{file: re(`^snacks\.lua$`), desc: re(`(?i)^rename`), cat: Editing},
+	{desc: re(`(?i)^replace`), cat: Editing},
 
 	// init.lua's scrolling and centred search
 	{lhs: re(`^(<[MmAa]-(Up|Down)>|[nN]|<[Cc]-[udfb]>)$`), cat: Navigation},

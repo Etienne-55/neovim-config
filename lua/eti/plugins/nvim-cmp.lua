@@ -4,11 +4,10 @@ return {
   dependencies = {
     "hrsh7th/cmp-buffer", -- source for text in buffer
     "hrsh7th/cmp-path", -- source for file system paths
-    "hrsh7th/cmp-cmdline", -- source for cmd completion 
+    "hrsh7th/cmp-cmdline", -- source for cmd completion
     {
       "L3MON4D3/LuaSnip",
-      -- follow latest release.
-      version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+      version = "v2.*",
       -- install jsregexp (optional!).
       build = "make install_jsregexp",
     },
@@ -119,5 +118,5 @@ return {
       },
     })
   end,
-} 
+}
 

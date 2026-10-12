@@ -16,6 +16,7 @@ opt.wrap = false
 -- search settings
 opt.ignorecase = true -- ignore case when searching
 opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
+opt.inccommand = "split" -- live preview of :s, plus a split listing off-screen matches
 
 opt.cursorline = true
 

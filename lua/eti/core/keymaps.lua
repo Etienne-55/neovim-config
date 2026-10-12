@@ -1,6 +1,6 @@
 vim.g.mapleader = " "
 
-local keymap = vim.keymap -- for conciseness
+local keymap = vim.keymap
 
 -- registers: only visual d (and y) copy; normal-mode d/D delete into the black hole
 keymap.set("n", "d", '"_d') -- dd, dw, d$... don't overwrite the clipboard
@@ -39,4 +39,36 @@ keymap.set("n", "n", "nzz")
 keymap.set("n", "N", "Nzz")
 keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlighting" })
 
+-- replace the word under the cursor (or the selection) in the whole file: edit the replacement, <CR> to apply
+-- keeppatterns: n/N keep searching what they did before
+keymap.set("n", "<leader>s", [[:<C-u>keeppatterns %s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word in file" })
+-- yank into "z so the clipboard is untouched; \V + escape makes the selection literal
+keymap.set("x", "<leader>s", [["zy:<C-u>keeppatterns %s/\V<C-r>=escape(@z, '/\')<CR>//gI<Left><Left><Left>]], { desc = "Replace selection in file" })
+
 keymap.set("n", "<leader>T", vim.treesitter.inspect_tree, { desc = "Inspect Treesitter tree" })
+
+-- run the current file in a terminal split below; re-running replaces the previous output
+local runners = {
+  typescript = "node", -- node 22.18+ strips TS types itself, no tsc step needed
+  javascript = "node",
+  python = "python3",
+  lua = "nvim -l",
+  sh = "bash",
+}
+local run_buf
+keymap.set("n", "<leader>rr", function()
+  local cmd = runners[vim.bo.filetype]
+  if not cmd then return vim.notify("No runner for " .. vim.bo.filetype, vim.log.levels.WARN) end
+  vim.cmd("silent update")
+  local file = vim.fn.shellescape(vim.fn.expand("%:p"))
+  if run_buf and vim.api.nvim_buf_is_valid(run_buf) then vim.api.nvim_buf_delete(run_buf, { force = true }) end
+  local code_win = vim.api.nvim_get_current_win()
+  vim.cmd("botright 12split")
+  vim.cmd.terminal(cmd .. " " .. file)
+  run_buf = vim.api.nvim_get_current_buf()
+  -- focus stays on the output: q closes it and lands back in the code
+  keymap.set("n", "q", function()
+    vim.api.nvim_buf_delete(run_buf, { force = true })
+    if vim.api.nvim_win_is_valid(code_win) then vim.api.nvim_set_current_win(code_win) end
+  end, { buffer = run_buf, nowait = true, desc = "Close run output" })
+end, { desc = "Run current file in a split" })
