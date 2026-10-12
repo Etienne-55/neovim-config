@@ -36,9 +36,11 @@ alias dbui='vim +DBUI'
 # changed files with diff preview (same as <space>gd in nvim)
 alias gd='nvim "+Pick git_status"'
 
-# commits, <cr> lists the files they touched (same as <space>gc / <space>gm in nvim)
+# commits, <cr> lists the files they touched (same as <space>gc / <space>gm in nvim);
+# gn jumps straight to the files of my last commit (<space>gn)
 alias gc='nvim "+Pick commits"'
 alias gm='nvim "+Pick my_commits"'
+alias gn='nvim "+Pick my_last_commit"'
 
 # bare `fd` opens the nvim directory picker (same as <space>fd);
 # `fd <args>` still runs the real fd binary

@@ -104,12 +104,15 @@ return {
     end
 
     -- files a commit touched, opened in their current (working tree) state;
-    -- files deleted or renamed since then are skipped
+    -- files deleted or renamed since then are skipped. A merge lists what it
+    -- brought in (diff against its first parent).
     local function commit_files(sha, back)
       local root = vim.fn.systemlist({ "git", "rev-parse", "--show-toplevel" })[1]
       local files = vim.tbl_filter(function(file)
         return vim.fn.filereadable(root .. "/" .. file) == 1
-      end, vim.fn.systemlist({ "git", "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha }))
+      end, vim.fn.systemlist({
+        "git", "-c", "core.quotepath=off", "show", "--diff-merges=first-parent", "--name-only", "--format=", sha,
+      }))
       if #files == 0 then
         vim.notify("None of the files in " .. sha .. " exist anymore", vim.log.levels.WARN)
         return back()
@@ -167,6 +170,19 @@ return {
       }, from_shell)
     end
 
+    -- files of my latest commit (merges included); <Esc> goes to my commit list
+    local function my_last_commit(from_shell)
+      local me = vim.fn.systemlist({ "git", "config", "user.email" })[1]
+      local sha = vim.fn.systemlist({ "git", "log", "-1", "--format=%h", "--author=" .. me, "--", "." })[1]
+      if not sha or sha == "" then
+        vim.notify("No commit of yours here", vim.log.levels.WARN)
+        return my_commits(from_shell)
+      end
+      commit_files(sha, function()
+        my_commits(from_shell)
+      end)
+    end
+
     -- pickers of this file that `:Pick` can open, besides the builtins
     local own_pickers = {
       directory = find_directory,
@@ -174,6 +190,7 @@ return {
         commits({}, from_shell)
       end,
       my_commits = my_commits,
+      my_last_commit = my_last_commit,
     }
 
     vim.api.nvim_create_user_command("FindDirectory", function()
@@ -256,6 +273,9 @@ return {
     keymap.set("n", "<leader>gm", function()
       my_commits()
     end, { desc = "Browse my commits, <cr> lists their files" })
+    keymap.set("n", "<leader>gn", function()
+      my_last_commit()
+    end, { desc = "Files of my last commit" })
     keymap.set("n", "<leader>gb", "<cmd>Telescope git_bcommits<cr>", { desc = "Browse buffer commits with diff preview" })
     keymap.set("n", "<leader>gB", "<cmd>Telescope git_branches<cr>", { desc = "Browse git branches" })
   end,
